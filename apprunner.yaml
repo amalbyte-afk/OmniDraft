@@ -1,0 +1,27 @@
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+      - docker build -t omnidraft -f docker/Dockerfile .
+run:
+  command: /entrypoint.sh
+  network:
+    port: 8080
+  env:
+    - name: SUPABASE_URL
+      value: ""
+    - name: SUPABASE_SERVICE_KEY
+      value: ""
+    - name: NVIDIA_API_KEY
+      value: ""
+    - name: NVIDIA_MODEL
+      value: "z-ai/glm-5.2"
+    - name: ALLOWED_ORIGINS
+      value: ""
+    - name: RATE_LIMIT
+      value: "20/minute"
+    - name: MAX_TOKENS
+      value: "4096"
+    - name: LOG_LEVEL
+      value: "INFO"

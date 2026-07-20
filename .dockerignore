@@ -1,0 +1,13 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+.git
+.gitignore
+.pytest_cache/
+.vite/
+dist/
+*.pdf
+*.pptx
+*.csv
+*.pem
