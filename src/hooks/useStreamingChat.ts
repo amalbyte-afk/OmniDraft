@@ -3,6 +3,16 @@ import { useStore } from '../store';
 import { sendChatMessage } from '../lib/api';
 import type { Message } from '../types';
 
+function uuid(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 function parseSSEChunk(buffer: string): { tokens: string[]; done: boolean; error?: string; conversationId?: string; remaining: string } {
   const tokens: string[] = [];
   let done = false;
@@ -48,13 +58,13 @@ export function useStreamingChat() {
   const sendMessage = useCallback(
     async (text: string) => {
       const userMessage: Message = {
-        id: crypto.randomUUID(),
+        id: uuid(),
         role: 'user',
         content: text,
         timestamp: Date.now(),
       };
 
-      const convId = activeConversationId || crypto.randomUUID();
+      const convId = activeConversationId || uuid();
       if (!activeConversationId) {
         setActiveConversation(convId);
         const newConv = {
@@ -84,7 +94,7 @@ export function useStreamingChat() {
 
         const decoder = new TextDecoder();
         const assistantMessage: Message = {
-          id: crypto.randomUUID(),
+          id: uuid(),
           role: 'assistant',
           content: '',
           timestamp: Date.now(),

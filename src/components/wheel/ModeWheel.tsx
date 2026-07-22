@@ -17,21 +17,21 @@ const modes: ModeConfig[] = [
     label: 'Draft',
     description: 'Write from scratch with AI guidance',
     icon: PenLine,
-    color: '#7C3AED',
+    color: '#FF4654',
   },
   {
     id: 'summarize',
     label: 'Summarize',
     description: 'Condense content into key points',
     icon: AlignLeft,
-    color: '#0891B2',
+    color: '#BA3A46',
   },
   {
     id: 'creative',
     label: 'Creative',
     description: 'Generate creative content & ideas',
     icon: Sparkles,
-    color: '#F59E0B',
+    color: '#FF6B76',
   },
 ];
 

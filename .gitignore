@@ -1,0 +1,65 @@
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+backend/.env
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS
+*.pem
+rootkey.csv
+
+# Docker
+.docker/
+
+# Logs
+*.log
+
+# Temp
+tmp/
+
+# Course artifacts
+*.pdf
+*.webp
+*.pptx
+
+# External repos / skills
+.agents/
+ralph-main/
+ui-ux-pro-max-skill-main/
+supabase/
+
+# Local build artifacts
+eb-deploy.zip
+tsconfig.tsbuildinfo
+
+# OpenCode / planning
+opencode-optimization.txt
+prompting.txt
+skills-lock.json
+.continue-here.md

@@ -7,6 +7,7 @@ from fastapi.responses import StreamingResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from app.database import get_supabase
 from app.models.chat import ChatRequest
 from app.services.llm import stream_nvidia_chat
 from app.services.supabase_db import (
@@ -21,28 +22,51 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 limiter = Limiter(key_func=get_remote_address)
 
 
+def _get_user_and_token(request: Request) -> tuple[str, str | None]:
+    auth = request.headers.get("Authorization", "")
+    auth_token = None
+    if auth.startswith("Bearer "):
+        auth_token = auth[7:]
+        try:
+            supabase = get_supabase()
+            user = supabase.auth.get_user(auth_token)
+            return (user.user.id, auth_token)
+        except Exception:
+            pass
+    return ("anonymous", None)
+
+
 @router.post("/stream")
 @limiter.limit("20/minute")
 async def chat_stream(request: Request, body: ChatRequest):
-    user_id = getattr(request.state, "user_id", "anonymous")
+    user_id, auth_token = _get_user_and_token(request)
     tokens_used = 0
     start_time = time.time()
 
     async def event_generator():
         nonlocal tokens_used
+        is_anonymous = user_id == "anonymous"
 
         conv_id = body.conversation_id
         try:
-            if not conv_id:
+            if not conv_id and not is_anonymous:
                 conv = create_conversation(
                     user_id=user_id,
                     mode=body.mode.value,
                     title=body.message[:80],
+                    auth_token=auth_token,
                 )
                 conv_id = conv["id"]
+        except Exception as e:
+            logger.warning("Failed to create conversation for user %s: %s", user_id, e)
 
-            save_message(conv_id, "user", body.message)
+        if conv_id and not is_anonymous:
+            try:
+                save_message(conv_id, "user", body.message, auth_token=auth_token)
+            except Exception as e:
+                logger.warning("Failed to save user message: %s", e)
 
+        try:
             full_response = []
             async for token in stream_nvidia_chat(
                 mode=body.mode.value,
@@ -54,12 +78,13 @@ async def chat_stream(request: Request, body: ChatRequest):
                 yield f"data: {json.dumps({'token': token})}\n\n"
 
             response_text = "".join(full_response)
-            save_message(conv_id, "assistant", response_text, tokens_used)
 
-            if user_id != "anonymous":
-                update_tokens_used(user_id, tokens_used)
+            if conv_id and not is_anonymous:
+                save_message(conv_id, "assistant", response_text, tokens_used, auth_token=auth_token)
+                update_tokens_used(user_id, tokens_used, auth_token=auth_token)
 
-            yield f"data: {json.dumps({'done': True, 'conversation_id': conv_id, 'tokens_used': tokens_used})}\n\n"
+            # Use provided conv_id or generate a temporary one for anonymous
+            yield f"data: {json.dumps({'done': True, 'conversation_id': conv_id or body.conversation_id or '', 'tokens_used': tokens_used})}\n\n"
         except Exception as e:
             logger.error("Chat stream error: %s", e)
             yield f"data: {json.dumps({'error': str(e)})}\n\n"

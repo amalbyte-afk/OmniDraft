@@ -5,8 +5,12 @@ from typing import Optional
 from app.database import get_supabase
 
 
-def create_conversation(user_id: str, mode: str, title: str = "New conversation") -> dict:
-    supabase = get_supabase()
+def _get_client(auth_token: str | None = None):
+    return get_supabase(token=auth_token)
+
+
+def create_conversation(user_id: str, mode: str, title: str = "New conversation", auth_token: str | None = None) -> dict:
+    supabase = _get_client(auth_token)
     conv_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
     data = {
@@ -21,8 +25,8 @@ def create_conversation(user_id: str, mode: str, title: str = "New conversation"
     return result.data[0]
 
 
-def get_conversations(user_id: str) -> list[dict]:
-    supabase = get_supabase()
+def get_conversations(user_id: str, auth_token: str | None = None) -> list[dict]:
+    supabase = _get_client(auth_token)
     result = (
         supabase.table("conversations")
         .select("id, title, mode, updated_at")
@@ -33,16 +37,20 @@ def get_conversations(user_id: str) -> list[dict]:
     return result.data
 
 
-def get_conversation(conversation_id: str) -> Optional[dict]:
-    supabase = get_supabase()
-    result = (
-        supabase.table("conversations")
-        .select("*")
-        .eq("id", conversation_id)
-        .single()
-        .execute()
-    )
-    if not result.data:
+def get_conversation(conversation_id: str, auth_token: str | None = None) -> Optional[dict]:
+    supabase = _get_client(auth_token)
+    result = None
+    try:
+        result = (
+            supabase.table("conversations")
+            .select("*")
+            .eq("id", conversation_id)
+            .single()
+            .execute()
+        )
+    except Exception:
+        return None
+    if not result or not result.data:
         return None
     conv = result.data
     msgs = (
@@ -56,14 +64,14 @@ def get_conversation(conversation_id: str) -> Optional[dict]:
     return conv
 
 
-def delete_conversation(conversation_id: str) -> None:
-    supabase = get_supabase()
+def delete_conversation(conversation_id: str, auth_token: str | None = None) -> None:
+    supabase = _get_client(auth_token)
     supabase.table("messages").eq("conversation_id", conversation_id).delete().execute()
     supabase.table("conversations").eq("id", conversation_id).delete().execute()
 
 
-def save_message(conversation_id: str, role: str, content: str, tokens_used: int = 0) -> dict:
-    supabase = get_supabase()
+def save_message(conversation_id: str, role: str, content: str, tokens_used: int = 0, auth_token: str | None = None) -> dict:
+    supabase = _get_client(auth_token)
     msg_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
     data = {
@@ -84,7 +92,7 @@ def save_message(conversation_id: str, role: str, content: str, tokens_used: int
 
 
 def get_templates(mode: Optional[str] = None) -> list[dict]:
-    supabase = get_supabase()
+    supabase = _get_client()
     query = supabase.table("templates").select("*").eq("is_active", True).order("sort_order")
     if mode:
         query = query.eq("mode", mode)
@@ -92,19 +100,22 @@ def get_templates(mode: Optional[str] = None) -> list[dict]:
     return result.data
 
 
-def get_or_create_profile(user_id: str, email: str) -> dict:
-    supabase = get_supabase()
-    existing = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
-    if existing.data:
-        return existing.data
+def get_or_create_profile(user_id: str, email: str, auth_token: str | None = None) -> dict:
+    supabase = _get_client(auth_token)
+    try:
+        existing = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
+        if existing.data:
+            return existing.data
+    except Exception:
+        pass
     now = datetime.now(timezone.utc).isoformat()
     data = {"id": user_id, "email": email, "created_at": now, "total_tokens_used": 0}
     result = supabase.table("profiles").insert(data).execute()
     return result.data[0]
 
 
-def update_tokens_used(user_id: str, tokens: int) -> None:
-    supabase = get_supabase()
+def update_tokens_used(user_id: str, tokens: int, auth_token: str | None = None) -> None:
+    supabase = _get_client(auth_token)
     try:
         current = supabase.table("profiles").select("total_tokens_used").eq("id", user_id).single().execute()
         current_tokens = current.data.get("total_tokens_used", 0) if current.data else 0

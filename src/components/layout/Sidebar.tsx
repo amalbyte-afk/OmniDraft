@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Plus, Trash2, ChevronLeft, History } from 'lucide-react';
 import { useStore } from '../../store';
@@ -10,11 +10,10 @@ export default function Sidebar() {
   const { sidebarOpen, setSidebarOpen, setActiveConversation } = useStore();
   const { conversations, deleteConversation, refresh } = useConversations();
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    refresh();
-  }, [refresh, location.pathname]);
+    if (sidebarOpen) refresh();
+  }, [refresh, sidebarOpen]);
 
   const handleNewChat = () => {
     setActiveConversation(null);

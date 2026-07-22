@@ -31,6 +31,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             supabase = get_supabase()
             user = supabase.auth.get_user(token)
             request.state.user_id = user.user.id
+            request.state.auth_token = token
         except Exception as e:
             logger.warning("JWT verification failed: %s", e)
             return JSONResponse(

@@ -3,6 +3,15 @@ import { useStore } from '../store';
 import { getConversations, deleteConversation as apiDelete } from '../lib/api';
 import type { Conversation } from '../types';
 
+function mergeConversations(
+  api: Conversation[],
+  existing: Conversation[],
+): Conversation[] {
+  const apiIds = new Set(api.map((c) => c.id));
+  const kept = existing.filter((c) => !apiIds.has(c.id) && c.messages.length > 0);
+  return [...api, ...kept];
+}
+
 export function useConversations() {
   const { conversations, setConversations } = useStore();
   const [loading, setLoading] = useState(false);
@@ -19,7 +28,8 @@ export function useConversations() {
         createdAt: new Date(c.updated_at).getTime(),
         updatedAt: new Date(c.updated_at).getTime(),
       }));
-      setConversations(mapped);
+      const existing = useStore.getState().conversations;
+      setConversations(mergeConversations(mapped, existing));
     } catch {
       // Silently fail — user can retry
     } finally {

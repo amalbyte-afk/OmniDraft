@@ -1,4 +1,5 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lightbulb } from 'lucide-react';
 import { useStore } from '../store';
@@ -9,12 +10,21 @@ import FileUploadZone from '../components/chat/FileUploadZone';
 import TemplatePicker from '../components/templates/TemplatePicker';
 import CopyButton from '../components/export/CopyButton';
 import ExportDropdown from '../components/export/ExportDropdown';
+import type { Mode } from '../types';
 
 export default function Workspace() {
-  const { mode, activeConversationId, conversations, showToast } = useStore();
+  const { mode, setMode, activeConversationId, conversations, showToast } = useStore();
   const { sendMessage, streaming, streamingContent } = useStreamingChat();
+  const [searchParams] = useSearchParams();
   const [showTemplates, setShowTemplates] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const modeParam = searchParams.get('mode') as Mode | null;
+    if (modeParam && ['draft', 'summarize', 'creative'].includes(modeParam)) {
+      setMode(modeParam);
+    }
+  }, [searchParams, setMode]);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId);
   const messages = activeConversation?.messages || [];

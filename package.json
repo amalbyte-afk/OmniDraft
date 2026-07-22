@@ -12,6 +12,7 @@
     "@supabase/supabase-js": "^2.45.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.400.0",
+    "ogl": "^1.0.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",

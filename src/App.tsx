@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
@@ -23,6 +23,8 @@ function PageLoader() {
 
 export default function App() {
   const { user, loading } = useAuth();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   if (loading) {
     return (
@@ -41,7 +43,7 @@ export default function App() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
-      <Navbar />
+      {!isHome && <Navbar />}
       <div className="flex flex-1">
         {user && <Sidebar />}
         <main id="main-content" className="flex-1">
@@ -67,7 +69,7 @@ export default function App() {
           </ErrorBoundary>
         </main>
       </div>
-      <Footer />
+      {!isHome && <Footer />}
     </div>
   );
 }

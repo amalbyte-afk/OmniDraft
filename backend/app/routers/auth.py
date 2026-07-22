@@ -16,10 +16,18 @@ class AuthCallbackBody(BaseModel):
     email: str
 
 
+def _get_auth_token(request: Request) -> str | None:
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        return auth[7:]
+    return None
+
+
 @router.post("/callback")
-async def auth_callback(body: AuthCallbackBody):
+async def auth_callback(request: Request, body: AuthCallbackBody):
+    auth_token = _get_auth_token(request)
     try:
-        profile = get_or_create_profile(body.user_id, body.email)
+        profile = get_or_create_profile(body.user_id, body.email, auth_token=auth_token)
         return {"profile": profile}
     except Exception as e:
         logger.error("Auth callback error: %s", e)
@@ -37,5 +45,6 @@ async def get_current_user(request: Request):
             status_code=401,
             content={"detail": "Not authenticated", "code": "auth_failed"},
         )
-    profile = get_or_create_profile(user_id, "")
+    auth_token = _get_auth_token(request)
+    profile = get_or_create_profile(user_id, "", auth_token=auth_token)
     return {"user": profile}

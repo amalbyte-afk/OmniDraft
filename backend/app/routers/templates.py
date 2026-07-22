@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Query
 
-from app.services.supabase import get_templates
+from app.services.supabase_db import get_templates
 
 router = APIRouter(prefix="/api/templates", tags=["templates"])
 

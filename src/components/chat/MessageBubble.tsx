@@ -21,7 +21,7 @@ const MessageBubble = memo(function MessageBubble({ message, isStreaming }: Mess
     >
       <div
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-          isUser ? 'bg-primary/20 text-primary' : 'bg-accent/20 text-accent'
+          isUser ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary'
         }`}
       >
         {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
