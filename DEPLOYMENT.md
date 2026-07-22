@@ -1,9 +1,39 @@
 # OmniDraft Deployment Guide
 
+## Architecture
+
+```
+                         ┌─────────────────────────────┐
+                         │         DuckDNS             │
+                         │  omni-draft.duckdns.org     │
+                         └──────────────┬──────────────┘
+                                        │ A record → EB public IP
+                         ┌──────────────▼──────────────┐
+                         │   AWS Elastic Beanstalk      │
+                         │   Single-instance t3.micro   │
+                         │   Docker AL2023 Platform     │
+                         │                              │
+                         │   ┌──────────────────────┐   │
+                         │   │   Docker Container    │   │
+                         │   │  ┌────────────────┐  │   │
+                         │   │  │   Nginx (443)  │  │   │
+                         │   │  │  (8080→301)    │  │   │
+                         │   │  └───────┬────────┘  │   │
+                         │   │          │            │   │
+                         │   │  ┌───────▼────────┐  │   │
+                         │   │  │   FastAPI      │  │   │
+                         │   │  │   Uvicorn:8000 │  │   │
+                         │   │  └────────────────┘  │   │
+                         │   └──────────────────────┘   │
+                         └──────────────────────────────┘
+```
+
 ## Prerequisites
-- AWS CLI configured with appropriate IAM permissions
+
+- AWS CLI configured with IAM permissions
 - Docker installed
 - Supabase project created (already done)
+- DuckDNS domain: `omni-draft.duckdns.org`
 
 ## Step 1: Initialize Database
 
@@ -23,89 +53,119 @@ This creates:
 
 1. Go to Authentication → Settings
 2. Enable **Email + Magic Link** provider
-3. Set Site URL to your App Runner URL (or `http://localhost:5173` for dev)
-4. Add redirect URLs: `https://your-app.awsapprunner.com/workspace`
+3. Set **Site URL** to `https://omni-draft.duckdns.org`
+4. Add to **Redirect URLs**: `https://omni-draft.duckdns.org`
 
-## Step 3: Create Storage Bucket
+## Step 3: Required Environment Variables
 
-```sql
--- Run in Supabase SQL Editor
-INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES ('uploads', 'uploads', false, 10485760, ARRAY['text/plain', 'application/pdf', 'application/msword']::text[]);
-```
+Set these in the Elastic Beanstalk environment (Environment Properties):
+
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | Supabase service role key |
+| `SUPABASE_ANON_KEY` | Supabase anon/publishable key |
+| `NVIDIA_API_KEY` | NVIDIA LLM API key |
+| `ALLOWED_ORIGINS` | `http://localhost:5173,https://omni-draft.duckdns.org` |
+| `DUCK_TOKEN` | DuckDNS API token (for HTTPS automation) |
 
 ## Step 4: Build & Push Docker Image
 
 ```bash
 # Authenticate to ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
-
-# Create repository (first time only)
-aws ecr create-repository --repository-name omnidraft --region us-east-1
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 028417007474.dkr.ecr.us-east-1.amazonaws.com
 
 # Build and push
 docker build -t omnidraft:latest -f docker/Dockerfile .
-docker tag omnidraft:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/omnidraft:latest
-docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/omnidraft:latest
+docker tag omnidraft:latest 028417007474.dkr.ecr.us-east-1.amazonaws.com/omnidraft:latest
+docker push 028417007474.dkr.ecr.us-east-1.amazonaws.com/omnidraft:latest
 ```
 
-## Step 5: Deploy to AWS App Runner
+## Step 5: Package & Deploy to Elastic Beanstalk
 
-Via Console:
-1. Go to AWS App Runner → Create service
-2. Source: Container registry → Amazon ECR
-3. Select `omnidraft:latest`
-4. Port: `8080`
-5. CPU: 1 vCPU, Memory: 2 GB
-6. Health check path: `/api/health`
-7. Set environment variables:
+Both `Dockerrun.aws.json` and `.ebextensions/` must be packaged together:
 
-| Variable | Value |
-|---|---|
-| SUPABASE_URL | `https://fegbaqkmjqxiphsndodk.supabase.co` |
-| SUPABASE_SERVICE_KEY | (service_role key from .env) |
-| NVIDIA_API_KEY | (NVIDIA API key from .env) |
-| NVIDIA_MODEL | `z-ai/glm-5.2` |
-| ALLOWED_ORIGINS | `https://<app-runner-url>.awsapprunner.com` |
-| RATE_LIMIT | `20/minute` |
-| MAX_TOKENS | `4096` |
-| LOG_LEVEL | `INFO` |
-
-8. Create and wait for deployment (2-3 minutes)
-
-## Step 6: Verify Deployment
-
-Check the health endpoint:
 ```bash
-curl https://<your-app>.awsapprunner.com/api/health
+# Create deployment zip (use forward slashes!)
+cd OmniDraft
+python -c "
+import zipfile, os
+with zipfile.ZipFile('eb-deploy.zip', 'w', zipfile.ZIP_DEFLATED) as z:
+    z.write('Dockerrun.aws.json', 'Dockerrun.aws.json')
+    for root, dirs, files in os.walk('.ebextensions'):
+        for f in files:
+            path = os.path.join(root, f)
+            z.write(path, path.replace(chr(92), '/'))
+"
+
+# Upload to S3
+aws s3 cp eb-deploy.zip s3://elasticbeanstalk-us-east-1-028417007474/omnidraft/deploy.zip
+
+# Create application version
+aws elasticbeanstalk create-application-version \
+  --application-name omnidraft \
+  --version-label deploy-v1 \
+  --source-bundle S3Bucket=elasticbeanstalk-us-east-1-028417007474,S3Key=omnidraft/deploy.zip
+
+# Deploy
+aws elasticbeanstalk update-environment \
+  --environment-name omnidraft-prod \
+  --version-label deploy-v1
 ```
-Expected: `{"status":"healthy","timestamp":"..."}`
+
+## Step 6: Verify HTTPS
+
+```bash
+# Health check
+curl https://omni-draft.duckdns.org/api/health
+
+# Expected: {"status":"healthy","timestamp":"..."}
+
+# Full page
+curl -I https://omni-draft.duckdns.org
+# Expected: 200 OK with Content-Security-Policy headers
+```
 
 ## Step 7: Local Development
 
 ```bash
 # Start backend
 cd backend
+pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 
 # Start frontend (separate terminal)
 npm run dev
 ```
 
-## Architecture
+Or use Docker Compose:
 
-```
-Browser → Vite Dev (5173) / Nginx (8080 prod)
-                        ↓
-              FastAPI (8000)
-                    ↓
-        Supabase (Postgres + Auth)
-                    ↓
-           NVIDIA API (Nemotron)
+```bash
+docker compose -f docker-compose.dev.yml up
 ```
 
-## Notes
-- No SSL needed on App Runner (terminated at load balancer)
-- Frontend static files served by nginx, API proxied to uvicorn
-- Rate limiting: 20 requests/minute per IP
-- File uploads limited to 10MB, UTF-8 text only
+## Important: HTTPS Startup Flow
+
+The container automatically provisions Let's Encrypt SSL at startup:
+
+1. FastAPI + Nginx (HTTP) start immediately
+2. Entrypoint updates DuckDNS A record with instance public IP
+3. Waits briefly for DNS propagation
+4. Runs Certbot HTTP-01 validation through port 80
+5. On success, reloads Nginx with HTTPS (port 443) and HTTP→HTTPS redirect
+6. Renewal checked every 24 hours via background loop
+
+When `DUCK_TOKEN` is not set (e.g., local dev), the container serves HTTP on port 8080 only and logs a safe warning. No cert is requested.
+
+## Cleanup After Assessment
+
+```bash
+# Terminate Elastic Beanstalk environment
+aws elasticbeanstalk terminate-environment --environment-name omnidraft-prod
+
+# Delete ECR repository
+aws ecr delete-repository --repository-name omnidraft --force
+
+# Delete DuckDNS record (optional)
+# Visit https://duckdns.org and remove the domain
+```

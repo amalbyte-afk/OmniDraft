@@ -120,7 +120,7 @@
 <h1>2. Application Overview &amp; Tech Stack</h1>
 
 <h2>2.1 Application Overview</h2>
-<p>OmniDraft is a full-stack, single-page web application consisting of a React frontend, a FastAPI backend, and a Supabase-managed PostgreSQL database. The application is containerized with Docker, served via Nginx reverse proxy, and deployed to AWS Elastic Beanstalk. The frontend communicates with the backend over HTTP (to be upgraded to HTTPS), and the backend in turn communicates with NVIDIA's LLM API over SSE streaming for real-time token generation.</p>
+<p>OmniDraft is a full-stack, single-page web application consisting of a React frontend, a FastAPI backend, and a Supabase-managed PostgreSQL database. The application is containerized with Docker, served via Nginx reverse proxy, and deployed to AWS Elastic Beanstalk. The frontend communicates with the backend over HTTPS (terminated at Nginx with Let's Encrypt certificates), and the backend in turn communicates with NVIDIA's LLM API over SSE streaming for real-time token generation.</p>
 
 <h2>2.2 Tech Stack</h2>
 <table>
@@ -306,7 +306,8 @@ Seed 12 templates: 4 Draft + 4 Summarize + 4 Creative.</code></pre>
   <li>apprunner.yaml for App Runner deployment</li>
   <li>Environment variables checklist for production</li>
 </ul>
-<p>The application was successfully deployed to <strong>AWS Elastic Beanstalk</strong> at <code>http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com</code> running on a t3.micro instance with Docker AL2023 platform.</p>
+<p>The application was successfully deployed to <strong>AWS Elastic Beanstalk</strong> (single-instance t3.micro, Docker AL2023 platform). HTTPS is provided by <strong>Let's Encrypt</strong> via Certbot HTTP-01 validation, automated at container startup through the Docker entrypoint. The free DuckDNS service resolves <code>omni-draft.duckdns.org</code> to the Elastic Beanstalk instance's public IP.</p>
+<p><strong>Live URL:</strong> <a href="https://omni-draft.duckdns.org">https://omni-draft.duckdns.org</a></p>
 </p>
 
 <h2>Phase 6 — Testing &amp; Security (Prompt 6)</h2>
@@ -348,12 +349,13 @@ Seed 12 templates: 4 Draft + 4 Summarize + 4 Creative.</code></pre>
                                          │
                                 HTTPS (fetch / EventSource)
                                          │
-                          ┌──────────────▼──────────────┐
-                          │    Nginx Reverse Proxy      │
-                          │         (port 8080)         │
-                          │  /api/* → FastAPI:8000      │
-                          │  /*     → Static files      │
-                          └──────────────┬──────────────┘
+                           ┌──────────────▼──────────────┐
+                           │    Nginx Reverse Proxy      │
+                           │  Port 443 (HTTPS)           │
+                           │  Port 8080 (301→HTTPS)      │
+                           │  /api/* → FastAPI:8000      │
+                           │  /*     → Static files      │
+                           └──────────────┬──────────────┘
                                          │
                           ┌──────────────▼──────────────┐
                           │      FastAPI (Uvicorn)      │
@@ -483,7 +485,7 @@ Seed 12 templates: 4 Draft + 4 Summarize + 4 Creative.</code></pre>
 
 <h2>7.3 Future Improvements</h2>
 <ul>
-  <li><strong>HTTPS:</strong> Add CloudFront or Let's Encrypt SSL for secure connections</li>
+  <li><strong>Production HTTPS:</strong> Replace DuckDNS + Let's Encrypt with a paid domain and AWS ACM for full trust chain</li>
   <li><strong>RAG Mode:</strong> Implement pgvector for retrieval-augmented generation over user-uploaded documents</li>
   <li><strong>Voice Input:</strong> Integrate Web Speech API for hands-free interaction</li>
   <li><strong>Team Workspaces:</strong> Add sharing and collaboration features</li>
@@ -527,7 +529,7 @@ Seed 12 templates: 4 Draft + 4 Summarize + 4 Creative.</code></pre>
 </ul>
 
 <h2>8.2 Live Application</h2>
-<p><strong>URL:</strong> <a href="http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com">http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com</a></p>
+<p><strong>URL:</strong> <a href="https://omni-draft.duckdns.org">https://omni-draft.duckdns.org</a> (HTTPS via Let's Encrypt + DuckDNS)</p>
 <p><strong>GitHub Repository:</strong> <a href="https://github.com/amalbyte-afk/OmniDraft">https://github.com/amalbyte-afk/OmniDraft</a></p>
 
 <p style="text-align:center; margin-top:60px; color:#888; font-size:9pt;">

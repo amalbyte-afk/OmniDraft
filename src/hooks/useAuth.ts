@@ -15,6 +15,14 @@ export function useAuth() {
       const u = data.session?.user ?? null;
       setUser(u);
       if (u?.email) authCallback(u.id, u.email);
+
+      const savedOrigin = localStorage.getItem('auth_origin');
+      if (savedOrigin && savedOrigin !== window.location.origin) {
+        localStorage.removeItem('auth_origin');
+        window.location.href = savedOrigin;
+        return;
+      }
+
       setLoading(false);
     };
 
@@ -25,6 +33,14 @@ export function useAuth() {
         const u = session?.user ?? null;
         setUser(u);
         if (u?.email) authCallback(u.id, u.email);
+
+        const savedOrigin = localStorage.getItem('auth_origin');
+        if (savedOrigin && savedOrigin !== window.location.origin) {
+          localStorage.removeItem('auth_origin');
+          window.location.href = savedOrigin;
+          return;
+        }
+
         setLoading(false);
       },
     );

@@ -26,12 +26,12 @@
 ## Live Demo
 
 <p align="center">
-  <a href="https://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com">
+  <a href="https://omni-draft.duckdns.org">
     <img src="https://img.shields.io/badge/🌐-Live%20Demo-2ea44f?style=for-the-badge">
   </a>
 </p>
 
-**AWS Elastic Beanstalk:** [http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com](http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com)
+**HTTPS:** [https://omni-draft.duckdns.org](https://omni-draft.duckdns.org)
 
 ---
 
@@ -64,7 +64,7 @@
 | ✅ | **File Upload** | Upload PDF/text for Summarize mode |
 | ✅ | **Dark Mode** | OLED-optimized dark theme |
 | ✅ | **Dockerized** | Multi-stage Docker build with nginx |
-| ✅ | **AWS Ready** | Deployed on Elastic Beanstalk with HTTPS-ready |
+| ✅ | **AWS Ready** | Deployed on Elastic Beanstalk with Let's Encrypt HTTPS |
 
 ---
 
@@ -207,6 +207,7 @@ OmniDraft/
 | `NVIDIA_API_KEY` | NVIDIA LLM API key | ✅ |
 | `NVIDIA_MODEL` | Model ID (e.g. `z-ai/glm-5.2`) | ✅ |
 | `ALLOWED_ORIGINS` | Comma-separated CORS origins | ✅ |
+| `DUCK_TOKEN` | DuckDNS API token for HTTPS automation | |
 | `RATE_LIMIT` | Rate limit (e.g. `20/minute`) | |
 | `MAX_TOKENS` | Max response tokens | |
 | `LOG_LEVEL` | Logging level (`INFO`, `DEBUG`) | |
@@ -250,7 +251,7 @@ OmniDraft/
 | TypeScript | FastAPI | AWS Elastic Beanstalk |
 | Vite | Uvicorn | Amazon ECR |
 | Tailwind CSS v3 | httpx (async) | Nginx |
-| Framer Motion | Supabase SDK | Let's Encrypt (planned) |
+| Framer Motion | Supabase SDK | Let's Encrypt |
 | Zustand (state) | Pydantic v2 | GitHub |
 
 ---

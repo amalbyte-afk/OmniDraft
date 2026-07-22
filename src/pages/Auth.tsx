@@ -7,6 +7,8 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { useStore } from '../store';
 
+const REDIRECT_URL = 'https://omni-draft.duckdns.org';
+
 export default function Auth() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
@@ -21,11 +23,16 @@ export default function Auth() {
     setError('');
 
     try {
+      const origin = window.location.origin;
+      if (origin !== REDIRECT_URL) {
+        localStorage.setItem('auth_origin', origin);
+      }
+
       const { error: authError } = await supabase.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: true,
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: REDIRECT_URL,
         },
       });
 
