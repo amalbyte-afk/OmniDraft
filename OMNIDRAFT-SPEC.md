@@ -361,11 +361,13 @@ omnidraft/
 │   └── .env.example
 │
 ├── docker/
-│   ├── Dockerfile.backend
-│   ├── Dockerfile.frontend
+│   ├── Dockerfile              # Multi-stage production build
+│   ├── Dockerfile.backend.dev
+│   ├── Dockerfile.frontend.dev
+│   ├── entrypoint.sh           # HTTPS auto-provisioning
 │   └── nginx.conf              # Reverse proxy (prod)
 │
-├── docker-compose.yml
+├── docker-compose.dev.yml
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -373,31 +375,36 @@ omnidraft/
 
 ---
 
-## 11. Deployment Strategy (AWS App Runner)
+## 11. Deployment Strategy (AWS Elastic Beanstalk)
 
 ### Pipeline
 ```
-GitHub Repo → AWS App Runner (source: GitHub)
-         → Auto-builds Docker image
-         → Deploys to *.awsapprunner.com
-         → HTTPS automatic (built-in SSL)
+Docker Build → Amazon ECR
+           → Elastic Beanstalk (single-instance t3.micro)
+           → Nginx (HTTP) + Certbot → Let's Encrypt HTTPS
+           → DuckDNS: omni-draft.duckdns.org
 ```
 
-### Environment Variables (in App Runner Console)
+### Environment Variables (in EB Environment Properties)
 | Variable | Source |
 |----------|--------|
 | `SUPABASE_URL` | Supabase project settings |
 | `SUPABASE_SERVICE_KEY` | Supabase (secret) |
 | `NVIDIA_API_KEY` | NVIDIA API (secret) |
-| `ALLOWED_ORIGINS` | App Runner URL |
+| `ALLOWED_ORIGINS` | `http://localhost:5173,https://omni-draft.duckdns.org` |
+| `DUCK_TOKEN` | DuckDNS API token |
 | `RATE_LIMIT` | `20/minute` |
 
 ### Production Architecture
 ```
-User → HTTPS → App Runner
-                ├── Nginx (reverse proxy)
-                │   ├── /api/* → FastAPI (port 8000)
-                │   └── /* → Static files (React build)
+User → HTTPS → DuckDNS
+                ↓ (A record → EC2 IP)
+                Docker Container
+                ├── Nginx (SSL termination, reverse proxy)
+                │   ├── Port 8080 (301 → HTTPS)
+                │   └── Port 443 (HTTPS)
+                │       ├── /api/* → FastAPI (port 8000)
+                │       └── /* → Static files (React build)
                 ├── FastAPI → Supabase PostgreSQL
                 └── FastAPI → NVIDIA API (external)
 ```

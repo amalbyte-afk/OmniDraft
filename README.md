@@ -189,10 +189,12 @@ OmniDraft/
 ├── prompts/              # Vibe coding prompt history
 ├── assets/               # Banner, screenshots
 ├── supabase/             # SQL migrations
+├── lectures/             # Course slides (PDF)
+├── .ebextensions/        # EB environment config
+├── LICENSE               # MIT license
 ├── OMNIDRAFT-SPEC.md     # Full project specification
 ├── DEPLOYMENT.md         # AWS deployment guide
-├── Dockerrun.aws.json    # Elastic Beanstalk config
-└── docker-compose.yml    # Local development
+└── Dockerrun.aws.json    # Elastic Beanstalk config
 ```
 
 ---

@@ -42,8 +42,10 @@ rootkey.csv
 
 # Temp
 tmp/
+report.html
 
 # Course artifacts
+lectures/
 *.pdf
 !OmniDraft-Project-Report.pdf
 *.webp
@@ -67,5 +69,3 @@ skills-lock.json
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
