@@ -37,11 +37,6 @@
 
 ## Screenshots
 
-<p align="center">
-  <em>Screenshots coming soon — add your own by placing PNG files in <code>assets/</code></em>
-</p>
-
-<!-- Uncomment and add actual screenshots:
 ### Landing Page
 
 ![Landing](assets/landing-page.png)
@@ -49,11 +44,6 @@
 ### Workspace
 
 ![Workspace](assets/workspace.png)
-
-### Mobile View
-
-![Mobile](assets/mobile.png)
--->
 
 ---
 
