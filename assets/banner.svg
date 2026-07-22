@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E1217"/>
+      <stop offset="50%" stop-color="#111823"/>
+      <stop offset="100%" stop-color="#0A0D12"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff4654" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ba3a46" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff4654"/>
+      <stop offset="100%" stop-color="#ba3a46"/>
+    </linearGradient>
+    <linearGradient id="codeFade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#ffffff" stop-opacity="0.04"/>
+      <stop offset="80%" stop-color="#ffffff" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowStrong">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glassBlur">
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.02" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="url(#bgGrad)"/>
+  <rect width="1280" height="720" fill="url(#grid)"/>
+
+  <!-- Glow orbs -->
+  <circle cx="960" cy="200" r="300" fill="url(#glowGrad)"/>
+  <circle cx="320" cy="500" r="250" fill="url(#glowGrad)"/>
+
+  <!-- Background code lines -->
+  <g opacity="0.06" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="11" fill="#ffffff">
+    <text x="60" y="120">def generate_content(prompt, mode="draft"):</text>
+    <text x="60" y="138">  system_prompt = SYSTEM_PROMPTS[mode]</text>
+    <text x="60" y="156">  response = llm.stream(system_prompt, prompt)</text>
+    <text x="60" y="174">  yield from response</text>
+
+    <text x="1060" y="220">import { useStreamingChat }</text>
+    <text x="1060" y="238">useEffect(() => {</text>
+    <text x="1060" y="256">  const evtSource = new EventSource(url)</text>
+
+    <text x="60" y="480">const modes = ["draft", "summarize", "creative"]</text>
+
+    <text x="900" y="540">@app.post("/api/chat/stream")</text>
+    <text x="900" y="558">async def chat_stream(request):</text>
+    <text x="900" y="576">  return StreamingResponse(generate())</text>
+
+    <text x="700" y="100">// SSE Event Stream</text>
+    <text x="700" y="118">eventSource.onmessage = (e) => {</text>
+    <text x="700" y="136">  setTokens(prev => [...prev, e.data])</text>
+    <text x="700" y="154">}</text>
+  </g>
+
+  <!-- Floating code snippets (thin, subtle) -->
+  <g opacity="0.08" font-family="'JetBrains Mono', monospace" font-size="10" fill="#ff4654">
+    <text x="1100" y="420">{"mode": "summarize"}</text>
+    <text x="120" y="600">{"status": "streaming", "token": "..."}</text>
+    <text x="850" y="650">⚡ Tokens: 1,247 | Latency: 43ms</text>
+  </g>
+
+  <!-- Coral line decorations -->
+  <line x1="80" y1="180" x2="280" y2="180" stroke="#ff4654" stroke-opacity="0.08" stroke-width="1"/>
+  <line x1="1000" y1="300" x2="1200" y2="300" stroke="#ff4654" stroke-opacity="0.06" stroke-width="1"/>
+  <line x1="200" y1="450" x2="400" y2="450" stroke="#ba3a46" stroke-opacity="0.06" stroke-width="1"/>
+
+  <!-- Glowing cursor -->
+  <rect x="700" y="150" width="2" height="18" rx="1" fill="#ff4654" filter="url(#glowStrong)">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="700" y="150" width="2" height="18" rx="1" fill="#ff4654" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Mode wheel indicator (three dots) -->
+  <g transform="translate(440, 520)">
+    <circle cx="0" cy="0" r="6" fill="#ff4654" filter="url(#glow)"/>
+    <circle cx="30" cy="0" r="6" fill="#ffffff" fill-opacity="0.15"/>
+    <circle cx="60" cy="0" r="6" fill="#ffffff" fill-opacity="0.1"/>
+    <text x="-8" y="-18" font-family="'Inter', sans-serif" font-size="10" fill="#ffffff" fill-opacity="0.3" letter-spacing="2">DRAFT</text>
+    <text x="20" y="-18" font-family="'Inter', sans-serif" font-size="10" fill="#ffffff" fill-opacity="0.15" letter-spacing="1">SUMMARIZE</text>
+    <text x="58" y="-18" font-family="'Inter', sans-serif" font-size="10" fill="#ffffff" fill-opacity="0.1" letter-spacing="1">CREATE</text>
+  </g>
+
+  <!-- Glass card frames -->
+  <rect x="60" y="280" width="240" height="140" rx="12" fill="#ffffff" fill-opacity="0.02" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+  <rect x="980" y="350" width="200" height="100" rx="12" fill="#ffffff" fill-opacity="0.02" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+
+  <!-- Small indicator dots in glass cards -->
+  <circle cx="85" cy="305" r="3" fill="#ff4654" opacity="0.4"/>
+  <circle cx="100" cy="305" r="3" fill="#ffffff" opacity="0.1"/>
+  <circle cx="115" cy="305" r="3" fill="#ffffff" opacity="0.1"/>
+
+  <!-- Main title -->
+  <text x="640" y="340" text-anchor="middle" font-family="'Inter', 'Segoe UI', -apple-system, sans-serif" font-size="72" font-weight="700" fill="#ffffff" letter-spacing="-1">
+    OmniDraft
+  </text>
+
+  <!-- Subtle underline accent -->
+  <rect x="530" y="360" width="220" height="3" rx="1.5" fill="url(#accentGrad)" filter="url(#glow)"/>
+
+  <!-- Tagline -->
+  <text x="640" y="400" text-anchor="middle" font-family="'Inter', 'Segoe UI', sans-serif" font-size="18" fill="#ffffff" fill-opacity="0.4" letter-spacing="3">
+    FROM ROUGH IDEA TO POLISHED DRAFT — ONE WORKSPACE
+  </text>
+
+  <!-- Lower corner decorations -->
+  <g opacity="0.04" stroke="#ff4654" stroke-width="0.5" fill="none">
+    <rect x="1240" y="680" width="20" height="20" rx="3"/>
+    <rect x="20" y="680" width="20" height="20" rx="3"/>
+    <rect x="1240" y="20" width="20" height="20" rx="3"/>
+    <rect x="20" y="20" width="20" height="20" rx="3"/>
+  </g>
+
+  <!-- Streaming text animation dots -->
+  <g font-family="'Inter', sans-serif" font-size="12" fill="#ff4654" fill-opacity="0.3" letter-spacing="1">
+    <text x="640" y="445" text-anchor="middle">
+      <tspan>●</tspan>
+      <tspan dx="6">●</tspan>
+      <tspan dx="6">●</tspan>
+    </text>
+  </g>
+</svg>

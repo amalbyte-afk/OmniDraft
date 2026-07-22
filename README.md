@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.svg" width="900" alt="OmniDraft Banner">
+</p>
+
 # OmniDraft
 
 AI-powered content creation platform built with React, FastAPI, Supabase, Docker, and AWS.
