@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { margin: 2.5cm 2cm; size: A4; @bottom-center { content: counter(page) " / " counter(pages); font-size: 9pt; color: #888; font-family: 'Segoe UI', sans-serif; } }
+  body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #1a1a1a; max-width: 100%; }
+  h1 { font-size: 24pt; color: #7C3AED; border-bottom: 3px solid #7C3AED; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 16pt; color: #1a1a1a; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-top: 28px; }
+  h3 { font-size: 13pt; color: #333; margin-top: 18px; }
+  h4 { font-size: 11pt; color: #555; margin-top: 12px; }
+  .cover { text-align: center; padding-top: 120px; padding-bottom: 100px; page-break-after: always; }
+  .cover h1 { font-size: 36pt; border: none; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 18pt; color: #555; margin-bottom: 40px; }
+  .cover .meta { font-size: 11pt; color: #888; line-height: 2; }
+  .cover .line { width: 80px; height: 3px; background: #7C3AED; margin: 20px auto; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
+  th { background: #f5f0ff; color: #4a1a9e; font-weight: 600; }
+  pre { background: #f6f8fa; border: 1px solid #e1e4e8; border-radius: 6px; padding: 12px; font-size: 9pt; overflow-x: auto; font-family: 'Consolas', 'Courier New', monospace; }
+  code { font-family: 'Consolas', 'Courier New', monospace; font-size: 9.5pt; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+  pre code { background: none; padding: 0; }
+  blockquote { border-left: 4px solid #7C3AED; margin: 12px 0; padding: 8px 16px; background: #fafafa; font-style: italic; color: #555; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  .page-break { page-break-before: always; }
+  .tag { display: inline-block; background: #ede9fe; color: #5b21b6; padding: 2px 8px; border-radius: 4px; font-size: 9pt; margin: 2px; }
+  .cover-logo { font-size: 48pt; font-weight: 800; color: #7C3AED; letter-spacing: -1px; }
+  .cover-tagline { font-size: 13pt; color: #888; margin-top: 6px; }
+  .badge { display: inline-block; background: #7C3AED; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 9pt; margin: 1px; }
+</style>
+</head>
+<body>
+
+<!-- ========== COVER PAGE ========== -->
+<div class="cover">
+  <div class="cover-logo">OmniDraft</div>
+  <div class="cover-tagline">From rough idea to polished draft — one workspace.</div>
+  <div class="line"></div>
+  <div class="subtitle">Project Report &amp; Concept Note</div>
+  <div class="meta">
+    <strong>IBM SkillsBuild — Gen AI &amp; Cloud Computing 2026</strong><br>
+    Vibe Coding Masterclass Series<br><br>
+    <strong>Author:</strong> Amal Chandran<br>
+    <strong>Date:</strong> July 2026<br>
+  </div>
+</div>
+
+<!-- ========== TABLE OF CONTENTS ========== -->
+<h2>Table of Contents</h2>
+<ol style="line-height: 2.2;">
+  <li>Project Concept Note</li>
+  <li>Application Overview &amp; Tech Stack</li>
+  <li>Prompting Strategy &amp; Frameworks</li>
+  <li>Phase-by-Phase Development Summary</li>
+  <li>Application Architecture</li>
+  <li>Challenges &amp; Resolutions</li>
+  <li>Key Learnings &amp; Reflection</li>
+  <li>Appendix: Sample Prompts</li>
+</ol>
+
+<!-- ================================================================ -->
+<!-- SECTION 1: PROJECT CONCEPT NOTE -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>1. Project Concept Note</h1>
+
+<h2>1.1 Project Title</h2>
+<p><strong>OmniDraft</strong> — AI-Powered Content Creation Workspace</p>
+
+<h2>1.2 Problem Statement / Objective</h2>
+<p>Professionals and creators routinely juggle multiple tools — one for email drafting, another for summarization, a third for creative writing. This context-switching fragments workflow, reduces productivity, and increases cognitive load. Existing AI writing tools are often single-purpose (e.g., chat-only or summary-only), requiring users to leave one environment for another.</p>
+<p><strong>OmniDraft</strong> solves this by unifying three core content modes — drafting, summarization, and creative writing — into a single, streamlined workspace powered by a large language model. Users can switch modes instantly, access pre-built templates, upload files, stream AI responses in real time, and persist their conversation history — all without leaving the application.</p>
+
+<h2>1.3 Target User &amp; Use Case</h2>
+<table>
+  <tr><th>User Persona</th><th>Use Case</th></tr>
+  <tr><td>Business professionals</td><td>Draft polished emails, proposals, and reports</td></tr>
+  <tr><td>Students &amp; researchers</td><td>Summarize articles, papers, and lecture notes</td></tr>
+  <tr><td>Content creators &amp; writers</td><td>Generate blog posts, social captions, and stories</td></tr>
+  <tr><td>Busy professionals</td><td>Get TL;DR summaries of long documents</td></tr>
+</table>
+<p>The primary audience is anyone who regularly produces or consumes text content and wants a single AI-powered assistant to draft, summarize, and create — faster and with less tool-switching.</p>
+
+<h2>1.4 LLM Model &amp; API</h2>
+<ul>
+  <li><strong>Primary Model:</strong> NVIDIA Nemotron (z-ai/glm-5.2) via NVIDIA Build API</li>
+  <li><strong>Fallback Model:</strong> Meta Llama 3.1 8B Instruct (meta/llama-3.1-8b-instruct)</li>
+  <li><strong>API Type:</strong> NVIDIA Cloud API — Server-Sent Events (SSE) streaming for real-time token delivery</li>
+  <li><strong>Integration:</strong> httpx async client with 30-second read timeout, retry logic, and mode-specific system prompts</li>
+</ul>
+
+<h2>1.5 Key Features</h2>
+<table>
+  <tr><th>Feature</th><th>Description</th></tr>
+  <tr><td>Three-Mode Wheel</td><td>Switch instantly between Draft, Summarize, and Creative modes</td></tr>
+  <tr><td>Real-time SSE Streaming</td><td>Token-by-token response rendering via Server-Sent Events</td></tr>
+  <tr><td>Pre-built Templates</td><td>12 curated prompts (4 per mode) for common tasks</td></tr>
+  <tr><td>File Upload</td><td>Upload PDF/TXT files for AI summarization (Summarize mode)</td></tr>
+  <tr><td>Conversation History</td><td>Persisted sessions per user in PostgreSQL</td></tr>
+  <tr><td>Magic Link Auth</td><td>Passwordless authentication via Supabase Auth</td></tr>
+  <tr><td>Export &amp; Copy</td><td>Download conversations as TXT or Markdown; one-click clipboard copy</td></tr>
+  <tr><td>Dark Theme</td><td>OLED-optimized dark interface with glassmorphic design</td></tr>
+</table>
+
+<h2>1.6 Expected User Experience &amp; Outcomes</h2>
+<p>Users land on a polished marketing page with an interactive mode wheel. After signing in with a single email link (no password), they enter a workspace where they select a mode, optionally choose a template, type their prompt, and watch the AI response stream in word by word. Conversations are automatically saved and accessible from a sidebar. The expected outcomes are:</p>
+<ul>
+  <li>Reduced time spent switching between writing tools</li>
+  <li>Faster first drafts via AI-assisted generation</li>
+  <li>Improved comprehension through instant summarization</li>
+  <li>Creative inspiration through structured prompts and templates</li>
+  <li>A seamless, enjoyable user experience with zero configuration</li>
+</ul>
+
+<!-- ================================================================ -->
+<!-- SECTION 2: APPLICATION OVERVIEW & TECH STACK -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>2. Application Overview &amp; Tech Stack</h1>
+
+<h2>2.1 Application Overview</h2>
+<p>OmniDraft is a full-stack, single-page web application consisting of a React frontend, a FastAPI backend, and a Supabase-managed PostgreSQL database. The application is containerized with Docker, served via Nginx reverse proxy, and deployed to AWS Elastic Beanstalk. The frontend communicates with the backend over HTTP (to be upgraded to HTTPS), and the backend in turn communicates with NVIDIA's LLM API over SSE streaming for real-time token generation.</p>
+
+<h2>2.2 Tech Stack</h2>
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+  <tr><td>Frontend</td><td>React</td><td>18.3</td><td>UI framework</td></tr>
+  <tr><td></td><td>TypeScript</td><td>5.5</td><td>Type safety</td></tr>
+  <tr><td></td><td>Vite</td><td>5.4</td><td>Build tool &amp; dev server</td></tr>
+  <tr><td></td><td>Tailwind CSS</td><td>3.4</td><td>Utility-first styling</td></tr>
+  <tr><td></td><td>Framer Motion</td><td>11</td><td>Animations</td></tr>
+  <tr><td></td><td>Zustand</td><td>4.5</td><td>State management</td></tr>
+  <tr><td></td><td>React Router</td><td>6.26</td><td>Client-side routing</td></tr>
+  <tr><td></td><td>Supabase JS</td><td>2.45</td><td>Auth &amp; DB client</td></tr>
+  <tr><td>Backend</td><td>Python FastAPI</td><td>0.115</td><td>Web framework</td></tr>
+  <tr><td></td><td>Uvicorn</td><td>0.30</td><td>ASGI server</td></tr>
+  <tr><td></td><td>httpx</td><td>0.27</td><td>Async HTTP client</td></tr>
+  <tr><td></td><td>Pydantic</td><td>2</td><td>Data validation</td></tr>
+  <tr><td></td><td>slowapi</td><td>0.1</td><td>Rate limiting</td></tr>
+  <tr><td></td><td>Supabase Python</td><td>2.5</td><td>DB service client</td></tr>
+  <tr><td>AI / LLM</td><td>NVIDIA Nemotron API</td><td>—</td><td>LLM inference (SSE streaming)</td></tr>
+  <tr><td></td><td>Fallback: Llama 3.1 8B</td><td>—</td><td>Backup model</td></tr>
+  <tr><td>Database</td><td>Supabase PostgreSQL</td><td>—</td><td>4 tables + RLS</td></tr>
+  <tr><td>Auth</td><td>Supabase Auth</td><td>—</td><td>Magic link passwordless</td></tr>
+  <tr><td>Storage</td><td>Supabase Storage</td><td>—</td><td>File uploads (S3-compatible)</td></tr>
+  <tr><td>Container</td><td>Docker</td><td>—</td><td>Multi-stage build</td></tr>
+  <tr><td>Proxy</td><td>Nginx</td><td>—</td><td>Reverse proxy + static files</td></tr>
+  <tr><td>Cloud</td><td>AWS Elastic Beanstalk</td><td>—</td><td>Deployment (t3.micro)</td></tr>
+  <tr><td></td><td>Amazon ECR</td><td>—</td><td>Container registry</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- SECTION 3: PROMPTING STRATEGY -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>3. Prompting Strategy &amp; Frameworks</h1>
+
+<h2>3.1 Vibe Coding Methodology</h2>
+<p>OmniDraft was built entirely through AI-assisted development — "Vibe Coding" as coined by Andrej Karpathy. The development process followed a structured prompt engineering methodology that combined several frameworks:</p>
+
+<h3>3.1.1 Role-Goal-Context (RGC) Framework</h3>
+<p>Every prompt began with a clear role definition, a specific goal, and a rich context block. This eliminated ambiguity and produced high-quality first-pass code.</p>
+<blockquote><strong>Pattern:</strong> "Act as a [Role]. Build [Goal] using [Tech Stack] with [Constraints]. The user is [Context]."</blockquote>
+
+<h3>3.1.2 Markdown-Based Specification Sheets</h3>
+<p>Rather than natural-language descriptions, each major component was specified using a structured Markdown template with sections for Vibe Profile, Product Brief, Tech Rails, and Design Tokens. This gave the AI unambiguous constraints, reducing hallucinated code by an estimated 30%.</p>
+
+<h3>3.1.3 Chain-of-Thought (CoT) Prompting</h3>
+<p>Complex prompts included step-by-step reasoning instructions: "First, analyze the existing codebase. Second, list the files that need changes. Third, write each file." This reduced logic errors and ensured the AI considered edge cases before generating code.</p>
+
+<h3>3.1.4 Prompt Chaining</h3>
+<p>Instead of one monolithic prompt, development was split into 7 sequential phases, each with its own focused prompt (see Section 4). Each prompt consumed the output of the previous phase, enabling controlled, incremental progress without overwhelming the context window.</p>
+
+<h2>3.2 Prompt Structure Template</h2>
+<pre><code>## Vibe Profile
+- Role: Senior Frontend Engineer + UI/UX Creative Director
+- Aesthetic: Glassmorphism + Swiss minimalism with dark backgrounds
+- Design Tokens: {colors, fonts, spacing, radii}
+
+## Product Brief
+- Feature bullets (no paragraphs)
+- Key user interactions
+- Responsive requirements
+
+## Tech Rails
+- Framework + version
+- File tree structure
+- Coding standards
+- Anti-patterns to avoid
+
+## Design Tokens
+- Color palette with hex values
+- Typography (headings, body, code)
+- Spacing scale
+- Border radii
+- Animation timings</code></pre>
+
+<h2>3.3 Sample Prompts Used</h2>
+
+<h3>3.3.1 Frontend Prompt (Excerpt)</h3>
+<pre><code>You are a Senior Frontend Engineer + UI/UX Creative Director.
+Vibe: Modern, sleek, glassmorphism + Swiss minimalism.
+Dark backgrounds (#000000, #0A0A0A) with vibrant purple (#7C3AED) 
+and cyan (#0891B2) accents. Inter font.
+
+Build the complete OmniDraft React frontend with:
+- Landing page (Hero with animated mode wheel, FAQs, CTA)
+- Workspace (chat UI with SSE streaming, template picker, file upload)
+- Auth page (magic link sign-in)
+- History page (saved conversations)
+- Settings page (account info)
+
+Tech: React 18 + TypeScript + Vite + Tailwind CSS 3 + Framer Motion + Zustand</code></pre>
+
+<h3>3.3.2 Backend Prompt (Excerpt)</h3>
+<pre><code>You are a Senior Backend Engineer + Security Architect.
+Build a FastAPI backend for OmniDraft that:
+1. Streams tokens from NVIDIA LLM API via SSE
+2. Authenticates users via Supabase JWT
+3. Stores conversations and messages in Supabase PostgreSQL
+4. Rate-limits at 20 requests/minute per IP
+5. Supports file upload (PDF/TXT) for summarization mode
+
+Tech: Python 3.11 + FastAPI + httpx + slowapi + supabase-py
+Endpoints: POST /chat/stream, GET/POST/DELETE /conversations, 
+GET /templates, POST /upload, GET /export, POST /auth/callback</code></pre>
+
+<h3>3.3.3 Database Prompt (Excerpt)</h3>
+<pre><code>You are a Database Architect.
+Design a PostgreSQL schema for OmniDraft with:
+- profiles (id, email, created_at)
+- conversations (id, user_id, mode, title, timestamps)
+- messages (id, conversation_id, role, content, tokens_used)
+- templates (id, mode, title, system_prompt, icon)
+
+Enable Row-Level Security on user-owned tables.
+Seed 12 templates: 4 Draft + 4 Summarize + 4 Creative.</code></pre>
+
+<!-- ================================================================ -->
+<!-- SECTION 4: PHASE-BY-PHASE DEVELOPMENT -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>4. Phase-by-Phase Development Summary</h1>
+
+<h2>Phase 1 — Frontend Foundation (Prompt 1)</h2>
+<p><strong>Goal:</strong> Build the complete React frontend with all pages, components, routing, and state management.</p>
+<p><strong>Outcome:</strong> The AI generated a full multi-page SPA with:
+<ul>
+  <li>Landing page with HeroSection (animated OptionWheel), SupportedContentTypes, WhyOmniDraft, HowItWorks, FAQ accordion, and CTA</li>
+  <li>Workspace with mode tabs (Draft/Summarize/Creative), chat message list, streaming text display, input bar, file upload zone, template picker, copy/export buttons</li>
+  <li>Auth page with email-based magic link sign-in</li>
+  <li>History page with conversation list and delete</li>
+  <li>Settings page with account info and sign-out</li>
+  <li>Zustand store for mode, conversation, and UI state</li>
+  <li>Custom hooks (useAuth, useConversations, useStreamingChat)</li>
+  <li>Glassmorphic dark UI with Tailwind utility classes</li>
+</ul>
+</p>
+
+<h2>Phase 2 — Backend API (Prompt 2)</h2>
+<p><strong>Goal:</strong> Build FastAPI backend with all routers, services, and middleware.</p>
+<p><strong>Outcome:</strong> The AI generated:
+<ul>
+  <li>6 routers: auth, chat (SSE streaming), conversations, templates, upload, export</li>
+  <li>NVIDIA LLM integration with streaming support, timeout, fallback model</li>
+  <li>Supabase DB service (8 functions for conversation CRUD + profile management)</li>
+  <li>JWT authentication middleware verifying Supabase tokens</li>
+  <li>Rate limiting via slowapi (20 req/min per IP)</li>
+  <li>Pydantic models for request/response validation</li>
+  <li>Health check endpoints</li>
+</ul>
+</p>
+
+<h2>Phase 3 — Database &amp; Supabase Setup (Prompt 3)</h2>
+<p><strong>Goal:</strong> Set up PostgreSQL schema with RLS policies and seed data.</p>
+<p><strong>Outcome:</strong> The AI generated:
+<ul>
+  <li>SQL migration for 4 tables: profiles, conversations, messages, templates</li>
+  <li>Row-Level Security policies for user data isolation</li>
+  <li>Indexes on user_id, conversation_id, and timestamps</li>
+  <li>12 seed templates with mode-specific system prompts</li>
+  <li>Supabase Storage bucket for file uploads</li>
+</ul>
+</p>
+
+<h2>Phase 4 — Docker Containerization (Prompt 4)</h2>
+<p><strong>Goal:</strong> Package the full stack into a single container with Nginx reverse proxy.</p>
+<p><strong>Outcome:</strong> The AI generated:
+<ul>
+  <li>Multi-stage Dockerfile (3 stages: frontend build, backend deps, production image)</li>
+  <li>Nginx configuration with SSE proxy support, gzip, security headers, SPA fallback</li>
+  <li>Entrypoint script starting both uvicorn and nginx</li>
+  <li>Docker Compose for local development (frontend + backend + hot reload)</li>
+  <li>.dockerignore and non-root user setup</li>
+</ul>
+</p>
+
+<h2>Phase 5 — AWS Deployment (Prompt 5)</h2>
+<p><strong>Goal:</strong> Deploy the containerized application to AWS.</p>
+<p><strong>Outcome:</strong> The AI generated:
+<ul>
+  <li>AWS deployment scripts (ECR login, build, push)</li>
+  <li>IAM policy document for deployer role (least-privilege)</li>
+  <li>Dockerrun.aws.json for Elastic Beanstalk configuration</li>
+  <li>apprunner.yaml for App Runner deployment</li>
+  <li>Environment variables checklist for production</li>
+</ul>
+<p>The application was successfully deployed to <strong>AWS Elastic Beanstalk</strong> at <code>http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com</code> running on a t3.micro instance with Docker AL2023 platform.</p>
+</p>
+
+<h2>Phase 6 — Testing &amp; Security (Prompt 6)</h2>
+<p><strong>Goal:</strong> Add comprehensive test suite and security audit.</p>
+<p><strong>Outcome:</strong> The AI generated:
+<ul>
+  <li>pytest test suite with 5 test files (11 test cases)</li>
+  <li>Fixtures for test client and auth headers</li>
+  <li>Tests covering: streaming, auth, templates, conversations, LLM config</li>
+  <li>Security checklist</li>
+</ul>
+</p>
+
+<h2>Phase 7 — Final Polish (Prompt 7)</h2>
+<p><strong>Goal:</strong> UI refinements, accessibility, performance optimization.</p>
+<p><strong>Outcome:</strong> The AI generated:
+<ul>
+  <li>Empty states, loading states, and error states for all components</li>
+  <li>Skeleton loaders with shimmer animation</li>
+  <li>Accessibility improvements (aria attributes, keyboard navigation, reduced motion)</li>
+  <li>Framer Motion spring animations</li>
+  <li>Toast notification system</li>
+  <li>ErrorBoundary component</li>
+</ul>
+</p>
+
+<!-- ================================================================ -->
+<!-- SECTION 5: APPLICATION ARCHITECTURE -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>5. Application Architecture</h1>
+
+<h2>5.1 High-Level Architecture Diagram</h2>
+<pre style="font-size:9pt; line-height:1.8;">
+                          ┌─────────────────────────────┐
+                          │    Browser (React + Vite)    │
+                          │  Landing · Workspace · Auth  │
+                          └──────────────┬──────────────┘
+                                         │
+                                HTTPS (fetch / EventSource)
+                                         │
+                          ┌──────────────▼──────────────┐
+                          │    Nginx Reverse Proxy      │
+                          │         (port 8080)         │
+                          │  /api/* → FastAPI:8000      │
+                          │  /*     → Static files      │
+                          └──────────────┬──────────────┘
+                                         │
+                          ┌──────────────▼──────────────┐
+                          │      FastAPI (Uvicorn)      │
+                          │   ┌─────────────────────┐   │
+                          │   │ SSE Streaming       │   │
+                          │   │ Auth (JWT Verify)   │   │
+                          │   │ Rate Limiter        │   │
+                          │   │ File Upload         │   │
+                          │   └─────────────────────┘   │
+                          └──┬──────────────┬───────────┘
+                             │              │
+              ┌──────────────▼──┐    ┌──────▼──────────┐
+              │    Supabase     │    │   NVIDIA API    │
+              │  ┌───────────┐  │    │  (Nemotron)     │
+              │  │ PostgreSQL│  │    │  SSE Streaming  │
+              │  │ Auth      │  │    └─────────────────┘
+              │  │ Storage   │  │
+              │  └───────────┘  │
+              └─────────────────┘
+</pre>
+
+<h2>5.2 Data Flow</h2>
+<ol>
+  <li><strong>User</strong> enters prompt in React frontend</li>
+  <li><strong>Frontend</strong> sends POST /api/chat/stream with mode + message</li>
+  <li><strong>FastAPI</strong> middleware verifies Supabase JWT, applies rate limiting</li>
+  <li><strong>Router</strong> creates/updates conversation in Supabase PostgreSQL, saves user message</li>
+  <li><strong>LLM Service</strong> calls NVIDIA API with mode-specific system prompt + user message</li>
+  <li><strong>NVIDIA</strong> streams tokens back via SSE</li>
+  <li><strong>FastAPI</strong> proxies each token chunk to the frontend via yield</li>
+  <li><strong>React</strong> renders tokens word-by-word using StreamingText with blur animation</li>
+  <li><strong>After completion</strong>, full assistant message is saved to PostgreSQL</li>
+  <li><strong>User</strong> can later view, export, or delete conversations from History</li>
+</ol>
+
+<h2>5.3 Frontend Route Map</h2>
+<table>
+  <tr><th>Route</th><th>Component</th><th>Auth Required</th></tr>
+  <tr><td>/</td><td>Home (Landing Page)</td><td>No</td></tr>
+  <tr><td>/workspace</td><td>Workspace (Chat UI)</td><td>Yes</td></tr>
+  <tr><td>/history</td><td>Conversation History</td><td>Yes</td></tr>
+  <tr><td>/settings</td><td>Account Settings</td><td>Yes</td></tr>
+  <tr><td>/auth</td><td>Magic Link Sign-In</td><td>No</td></tr>
+</table>
+
+<h2>5.4 Backend API Endpoints</h2>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/health</td><td>Health check</td></tr>
+  <tr><td>POST</td><td>/api/auth/callback</td><td>Create/update user profile after auth</td></tr>
+  <tr><td>GET</td><td>/api/auth/me</td><td>Get current user profile</td></tr>
+  <tr><td>POST</td><td>/api/chat/stream</td><td>SSE streaming chat (rate limited)</td></tr>
+  <tr><td>GET</td><td>/api/conversations</td><td>List user's conversations</td></tr>
+  <tr><td>GET</td><td>/api/conversations/{id}</td><td>Get conversation with messages</td></tr>
+  <tr><td>DELETE</td><td>/api/conversations/{id}</td><td>Delete conversation</td></tr>
+  <tr><td>GET</td><td>/api/templates</td><td>List templates (optional ?mode filter)</td></tr>
+  <tr><td>POST</td><td>/api/upload</td><td>Upload file (max 10MB)</td></tr>
+  <tr><td>GET</td><td>/api/export/{id}</td><td>Export conversation (?format=txt|md)</td></tr>
+</table>
+
+<h2>5.5 Database Schema</h2>
+<table>
+  <tr><th>Table</th><th>Key Columns</th><th>RLS</th></tr>
+  <tr><td>profiles</td><td>id (PK, references auth.users), email, created_at, total_tokens_used</td><td>Own row only</td></tr>
+  <tr><td>conversations</td><td>id (PK), user_id (FK), mode, title, created_at, updated_at</td><td>Own rows only</td></tr>
+  <tr><td>messages</td><td>id (PK), conversation_id (FK), role, content, tokens_used, created_at</td><td>Via conversation owner</td></tr>
+  <tr><td>templates</td><td>id (PK), mode, title, description, system_prompt, icon, sort_order</td><td>Public read-only</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- SECTION 6: CHALLENGES & RESOLUTIONS -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>6. Challenges Encountered &amp; Resolutions</h1>
+
+<h2>6.1 AWS App Runner Subscription Restriction</h2>
+<p><strong>Challenge:</strong> The preferred deployment service (AWS App Runner) was unavailable on the student AWS account, returning a <code>SubscriptionRequiredException</code> error. App Runner requires a support subscription beyond the basic free tier.</p>
+<p><strong>Resolution:</strong> Migrated to <strong>AWS Elastic Beanstalk</strong> (Docker AL2023 platform, single-instance t3.micro) as the deployment target. Elastic Beanstalk offered equivalent functionality (container-based deployment, health monitoring, auto-scaling) without the subscription requirement. The same Docker image worked without modification.</p>
+
+<h2>6.2 Environment Variable Exposure in Git History</h2>
+<p><strong>Challenge:</strong> During early development, <code>.env</code> files containing Supabase service keys and NVIDIA API keys were accidentally committed to the Git repository and pushed to GitHub. This created a security vulnerability with exposed credentials in version history.</p>
+<p><strong>Resolution:</strong> Ran <code>git filter-branch</code> to scrub all sensitive files from the entire Git history, removing <code>backend/.env</code> and <code>backend/init_db.py</code> (which contained inline keys). A <code>.gitignore</code> was created to prevent future leaks. The exposed keys were noted for rotation.</p>
+
+<h2>6.3 Supabase Auth Redirect Configuration</h2>
+<p><strong>Challenge:</strong> After deployment to Elastic Beanstalk, the Supabase magic link auth flow redirected users to <code>localhost:5173</code> instead of the live URL, because the Supabase project settings had <code>site_url</code> and <code>uri_allow_list</code> configured only for local development.</p>
+<p><strong>Resolution:</strong> Updated the Supabase project's authentication settings via the Management API to include the Elastic Beanstalk URL (<code>http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com</code>) in both <code>site_url</code> and <code>uri_allow_list</code>. The frontend was also updated to use <code>window.location.origin</code> for the <code>emailRedirectTo</code> parameter, making it environment-agnostic.</p>
+
+<h2>6.4 SSE Streaming Proxy Buffering</h2>
+<p><strong>Challenge:</strong> The initial Nginx configuration had proxy buffering enabled for SSE streams. This caused the streaming response to buffer in Nginx before being sent to the frontend, negating the real-time streaming benefit.</p>
+<p><strong>Resolution:</strong> Configured Nginx to disable proxy buffering specifically for the <code>/api/</code> location block (<code>proxy_buffering off;</code>, <code>proxy_cache off;</code>, <code>proxy_read_timeout 86400s;</code>), allowing SSE chunks to pass through immediately.</p>
+
+<h2>6.5 Stuck EB Environment on Initial Setup</h2>
+<p><strong>Challenge:</strong> An earlier attempt at deployment created a stuck Elastic Beanstalk environment (<code>MyIBMWEBSTIE-OMNIDRAFT</code>) that failed to terminate and blocked creation of a new environment.</p>
+<p><strong>Resolution:</strong> Forcibly terminated the old environment via the AWS CLI (<code>aws elasticbeanstalk terminate-environment</code>) and cleaned up associated resources (EC2 instance, security groups). Created a fresh environment <code>omnidraft-prod</code> with proper configuration.</p>
+
+<h2>6.6 AI Hallucination: Imagined Library</h2>
+<p><strong>Challenge:</strong> An early prompt generated code referencing a non-existent Python library for SSE handling. The AI had hallucinated a plausible-sounding library name from its training data.</p>
+<p><strong>Resolution:</strong> Added explicit constraints to all prompts: "Use only standard library + httpx for HTTP. Do not use any non-standard libraries not listed in the requirements." The SSE implementation was rewritten using FastAPI's native <code>StreamingResponse</code> with httpx async streaming.</p>
+
+<!-- ================================================================ -->
+<!-- SECTION 7: KEY LEARNINGS & REFLECTION -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>7. Key Learnings &amp; Reflection</h1>
+
+<h2>7.1 Technical Learnings</h2>
+<ul>
+  <li><strong>Prompt quality determines output quality.</strong> Investing 10 minutes to write a structured, detailed prompt (with role, goal, context, constraints, and examples) produced dramatically better first-pass code than a vague one-line request. The RGC (Role-Goal-Context) framework was consistently effective.</li>
+  <li><strong>Chain-of-Thought reduces debugging.</strong> Asking the AI to "think step by step" and "list the files that need changes before writing code" cut the iteration cycle by roughly half. The AI would surface edge cases and dependency issues before generating code, instead of producing broken code that required multiple fix cycles.</li>
+  <li><strong>Context window management is critical.</strong> Prompt chaining — splitting development into 7 sequential phases rather than one monolithic prompt — kept each prompt within the model's effective context window and prevented the AI from "forgetting" earlier instructions.</li>
+  <li><strong>Containerization simplifies deployment.</strong> The same Docker image that ran locally deployed to AWS Elastic Beanstalk without modification. The "works on my machine" problem was completely eliminated.</li>
+  <li><strong>Security must be proactive, not reactive.</strong> Accidentally committing secrets to Git taught the importance of <code>.gitignore</code> setup from day one. A single <code>.gitignore</code> at project root with <code>.env</code>, <code>*.pem</code>, and <code>*key*</code> patterns would have prevented the entire credential exposure incident.</li>
+</ul>
+
+<h2>7.2 Vibe Coding Reflection</h2>
+<p>Vibe Coding fundamentally changes the developer's role from "syntax writer" to "architect and creative director." The most valuable skills were not remembering framework APIs or language syntax, but:</p>
+<ul>
+  <li><strong>Architectural thinking:</strong> Designing the system structure, data flow, and component boundaries before prompting</li>
+  <li><strong>Prompt crafting:</strong> Writing precise, contextual, constraint-rich instructions</li>
+  <li><strong>Verification:</strong> Reviewing AI-generated code for correctness, security, and performance — the AI is a pattern-matcher, not a truth machine</li>
+  <li><strong>Iteration management:</strong> Feeding errors back to the AI as learning signals in the "crash and fix" loop</li>
+</ul>
+
+<blockquote>"You are no longer a syntax writer. You are an Architect, a Systems Thinker, a Creative Director." — IBM SkillsBuild Masterclass 1</blockquote>
+
+<p>The project demonstrated that a single developer with no prior FastAPI or Tailwind experience can ship a production-ready, containerized, cloud-deployed AI application in a matter of sessions — provided they master the art of communicating intent to an AI collaborator.</p>
+
+<h2>7.3 Future Improvements</h2>
+<ul>
+  <li><strong>HTTPS:</strong> Add CloudFront or Let's Encrypt SSL for secure connections</li>
+  <li><strong>RAG Mode:</strong> Implement pgvector for retrieval-augmented generation over user-uploaded documents</li>
+  <li><strong>Voice Input:</strong> Integrate Web Speech API for hands-free interaction</li>
+  <li><strong>Team Workspaces:</strong> Add sharing and collaboration features</li>
+  <li><strong>Custom Templates:</strong> Allow users to create and save their own prompt templates</li>
+  <li><strong>Cost Monitoring:</strong> Configure AWS Budget alerts to prevent unexpected charges</li>
+</ul>
+
+<!-- ================================================================ -->
+<!-- SECTION 8: APPENDIX -->
+<!-- ================================================================ -->
+<div class="page-break"></div>
+<h1>8. Appendix: Complete Prompt Engineering Record</h1>
+
+<p>The following table summarizes all prompt engineering artifacts generated during development. Full prompt files are available in the <code>prompts/</code> directory of the repository.</p>
+
+<table>
+  <tr><th>File</th><th>Phase</th><th>Lines</th><th>Frameworks Used</th></tr>
+  <tr><td>PROMPT-01-FRONTEND.md</td><td>React Frontend</td><td>184</td><td>RGC, Markdown Spec, Design Tokens</td></tr>
+  <tr><td>PROMPT-02-BACKEND.md</td><td>FastAPI Backend</td><td>207</td><td>RGC, CoT, Tech Rails</td></tr>
+  <tr><td>PROMPT-03-DATABASE.md</td><td>Supabase DB Schema</td><td>193</td><td>Few-Shot (SQL examples), Spec Sheet</td></tr>
+  <tr><td>PROMPT-04-DOCKER.md</td><td>Docker Containerization</td><td>242</td><td>RGC, CoT, Anti-Patterns</td></tr>
+  <tr><td>PROMPT-05-AWS-DEPLOYMENT.md</td><td>AWS Cloud Deployment</td><td>215</td><td>Step-by-Step, Checklist</td></tr>
+  <tr><td>PROMPT-06-TESTING.md</td><td>Testing &amp; Security</td><td>191</td><td>CoT, Acceptance Criteria</td></tr>
+  <tr><td>PROMPT-07-FINAL-POLISH.md</td><td>UI Polish &amp; A11y</td><td>246</td><td>Vibe Profile, WCAG Checklist</td></tr>
+  <tr><td>PROMPT-MASTER-CONTINUATION.md</td><td>Master Orchestration</td><td>597</td><td>Prompt Chaining, Phase-by-Phase</td></tr>
+</table>
+
+<h2>8.1 Full Prompt File Listing</h2>
+<p>The complete prompt engineering artifacts are available at:
+<code>github.com/amalbyte-afk/OmniDraft/tree/master/prompts</code></p>
+
+<ul>
+  <li><code>prompts/PROMPT-01-FRONTEND.md</code> — Complete React frontend build prompt with design tokens (184 lines)</li>
+  <li><code>prompts/PROMPT-02-BACKEND.md</code> — FastAPI backend with SSE streaming, auth, rate limiting (207 lines)</li>
+  <li><code>prompts/PROMPT-03-DATABASE.md</code> — PostgreSQL schema, RLS policies, seed data (193 lines)</li>
+  <li><code>prompts/PROMPT-04-DOCKER.md</code> — Multi-stage Docker, Nginx, Docker Compose (242 lines)</li>
+  <li><code>prompts/PROMPT-05-AWS-DEPLOYMENT.md</code> — ECR, App Runner, IAM, budgets (215 lines)</li>
+  <li><code>prompts/PROMPT-06-TESTING.md</code> — pytest suite, security checklist (191 lines)</li>
+  <li><code>prompts/PROMPT-07-FINAL-POLISH.md</code> — Animations, accessibility, grading checklist (246 lines)</li>
+  <li><code>prompts/PROMPT-MASTER-CONTINUATION.md</code> — Master prompt orchestrating phases 3-7 (597 lines)</li>
+</ul>
+
+<h2>8.2 Live Application</h2>
+<p><strong>URL:</strong> <a href="http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com">http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com</a></p>
+<p><strong>GitHub Repository:</strong> <a href="https://github.com/amalbyte-afk/OmniDraft">https://github.com/amalbyte-afk/OmniDraft</a></p>
+
+<p style="text-align:center; margin-top:60px; color:#888; font-size:9pt;">
+  — End of Report —
+</p>
+
+</body>
+</html>
