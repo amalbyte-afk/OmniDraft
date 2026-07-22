@@ -64,3 +64,8 @@ opencode-optimization.txt
 prompting.txt
 skills-lock.json
 .continue-here.md
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

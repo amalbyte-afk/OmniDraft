@@ -26,7 +26,7 @@
 ## Live Demo
 
 <p align="center">
-  <a href="http://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com">
+  <a href="https://omnidraft-prod.eba-pepktrup.us-east-1.elasticbeanstalk.com">
     <img src="https://img.shields.io/badge/🌐-Live%20Demo-2ea44f?style=for-the-badge">
   </a>
 </p>
