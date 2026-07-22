@@ -238,6 +238,7 @@ OmniDraft/
 | [`OMNIDRAFT-SPEC.md`](OMNIDRAFT-SPEC.md) | Full project specification, design tokens, API structure |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | AWS deployment guide and architecture |
 | [`prompts/`](prompts/) | Complete prompt engineering history |
+| [`OmniDraft-Project-Report.pdf`](OmniDraft-Project-Report.pdf) | Final project report &amp; concept note |
 
 ---
 

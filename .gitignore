@@ -45,6 +45,7 @@ tmp/
 
 # Course artifacts
 *.pdf
+!OmniDraft-Project-Report.pdf
 *.webp
 *.pptx
 
