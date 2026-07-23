@@ -88,7 +88,7 @@
 
 ---
 
-## Architecture
+## Architecture of the web application
 
 ```
                     ┌─────────────────────────────┐
